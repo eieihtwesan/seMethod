@@ -1,22 +1,18 @@
 @startuml
-'https://plantuml.com/use-case-diagram
 
-:Main Admin: as Admin
-(Use the application) as (Use)
+actor HR as "HR Advisor"
 
-User -> (Start)
-User --> (Use)
+rectangle Database
 
-Admin ---> (Use)
+rectangle "HR System" {
+    usecase UC4 as "Get salaries
+    by role"
 
-note right of Admin : This is an example.
+    usecase UCa as "Print salaries"
 
-note right of (Use)
-A note can also
-be on several lines
-end note
+    HR - UC4
+    UC4 ..> UCa : include
+    UC4 - Database
+}
 
-note "This note is connected\nto several objects." as N2
-(Start) .. N2
-N2 .. (Use)
 @enduml
