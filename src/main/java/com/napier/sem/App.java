@@ -121,9 +121,10 @@ public class App
     {
         if (emp != null && !emp.isEmpty())
         {
+            System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Salary"));
             for (Employee employee : emp) {
-                System.out.println(
-                        employee.emp_no + " " + employee.first_name + " " + employee.last_name + " " + " Engineer" + " " + employee.salary + "\n");
+                System.out.println(String.format("%-10s %-15s %-20s %-8s",
+                        employee.emp_no + " " + employee.first_name + " " + employee.last_name + " " + " Engineer" + " " + employee.salary ));
             }
         }
     }
