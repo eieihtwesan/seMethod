@@ -1,6 +1,8 @@
 package com.napier.sem;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App
 {
@@ -69,31 +71,42 @@ public class App
         }
     }
 
-    public Employee getEmployee(int ID)
+    public List<Employee> getEmployee(String title)
     {
+        List<Employee> employees = new ArrayList<Employee>();
+
         try
         {
-            // Create an SQL statement
-            Statement stmt = con.createStatement();
-            // Create string for SQL statement
+            // Create an SQL prepared statement to prevent SQL injection
             String strSelect =
-                    "SELECT emp_no, first_name, last_name "
-                            + "FROM employees "
-                            + "WHERE emp_no = " + ID;
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary " +
+                            "FROM employees, salaries, titles " +
+                            "WHERE employees.emp_no = salaries.emp_no " +
+                            "AND employees.emp_no = titles.emp_no " +
+                            "AND salaries.to_date = '9999-01-01' " +
+                            "AND titles.to_date = '9999-01-01' " +
+                            "AND titles.title = ? " +  // Use a placeholder for title
+                            "ORDER BY employees.emp_no ASC";
+
+            // Prepare statement
+            PreparedStatement pstmt = con.prepareStatement(strSelect);
+            // Set the title parameter
+            pstmt.setString(1, title);
+
             // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
+            ResultSet rset = pstmt.executeQuery();
+
             // Return new employee if valid.
-            // Check one is returned
-            if (rset.next())
+            while (rset.next())
             {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("emp_no");
                 emp.first_name = rset.getString("first_name");
                 emp.last_name = rset.getString("last_name");
-                return emp;
+                emp.salary = rset.getInt("salary");
+                employees.add(emp);
             }
-            else
-                return null;
+            return employees;
         }
         catch (Exception e)
         {
@@ -103,18 +116,15 @@ public class App
         }
     }
 
-    public void displayEmployee(Employee emp)
+
+    public void displayEmployee(List<Employee> emp)
     {
-        if (emp != null)
+        if (emp != null && !emp.isEmpty())
         {
-            System.out.println(
-                    emp.emp_no + " "
-                            + emp.first_name + " "
-                            + emp.last_name + "\n"
-                            + emp.title + "\n"
-                            + "Salary:" + emp.salary + "\n"
-                            + emp.dept_name + "\n"
-                            + "Manager: " + emp.manager + "\n");
+            for (Employee employee : emp) {
+                System.out.println(
+                        employee.emp_no + " " + employee.first_name + " " + employee.last_name + " " + " Engineer" + " " + employee.salary + "\n");
+            }
         }
     }
 
@@ -127,7 +137,7 @@ public class App
         a.connect();
 
         // get Employee database
-        Employee emp = a.getEmployee(255530);
+        List<Employee> emp = a.getEmployee("Engineer");
 
         a.displayEmployee(emp);
         // Disconnect from database
