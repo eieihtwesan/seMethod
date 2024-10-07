@@ -2,6 +2,7 @@ package com.napier.devops;
 
 import com.napier.sem.App;
 import com.napier.sem.Employee;
+import com.napier.sem.EmployeeDisplay;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -9,12 +10,12 @@ import java.util.ArrayList;
 
 public class AppTest
 {
-    static App app;
+    static EmployeeDisplay app;
 
     @BeforeAll
     static void init()
     {
-        app = new App();
+        app = new EmployeeDisplay();
     }
 
     // null

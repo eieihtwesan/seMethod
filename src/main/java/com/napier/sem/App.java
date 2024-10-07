@@ -71,129 +71,6 @@ public class App
         }
     }
 
-    public List<Employee> getEmployeeWithTitile(String title)
-    {
-        List<Employee> employees = new ArrayList<Employee>();
-
-        try
-        {
-            // Create an SQL prepared statement to prevent SQL injection
-            String strSelect =
-                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary " +
-                            "FROM employees, salaries, titles " +
-                            "WHERE employees.emp_no = salaries.emp_no " +
-                            "AND employees.emp_no = titles.emp_no " +
-                            "AND salaries.to_date = '9999-01-01' " +
-                            "AND titles.to_date = '9999-01-01' " +
-                            "AND titles.title = ? " +  // Use a placeholder for title
-                            "ORDER BY employees.emp_no ASC";
-
-            // Prepare statement
-            PreparedStatement pstmt = con.prepareStatement(strSelect);
-            // Set the title parameter
-            pstmt.setString(1, title);
-
-            // Execute SQL statement
-            ResultSet rset = pstmt.executeQuery();
-
-            // Return new employee if valid.
-            while (rset.next())
-            {
-                Employee emp = new Employee();
-                emp.emp_no = rset.getInt("emp_no");
-                emp.first_name = rset.getString("first_name");
-                emp.last_name = rset.getString("last_name");
-                emp.salary = rset.getInt("salary");
-                employees.add(emp);
-            }
-            return employees;
-        }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-            System.out.println("Failed to get employee details");
-            return null;
-        }
-    }
-
-
-    /**
-     * Gets all the current employees and salaries.
-     * @return A list of all employees and salaries, or null if there is an error.
-     */
-    public ArrayList<Employee> getAllSalaries()
-    {
-        try
-        {
-            // Create an SQL statement
-            Statement stmt = con.createStatement();
-            // Create string for SQL statement
-            String strSelect =
-                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary "
-                            + "FROM employees, salaries "
-                            + "WHERE employees.emp_no = salaries.emp_no AND salaries.to_date = '9999-01-01' "
-                            + "ORDER BY employees.emp_no ASC";
-            // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
-            // Extract employee information
-            ArrayList<Employee> employees = new ArrayList<Employee>();
-            while (rset.next())
-            {
-                Employee emp = new Employee();
-                emp.emp_no = rset.getInt("employees.emp_no");
-                emp.first_name = rset.getString("employees.first_name");
-                emp.last_name = rset.getString("employees.last_name");
-                emp.salary = rset.getInt("salaries.salary");
-                employees.add(emp);
-            }
-            return employees;
-        }
-        catch (Exception e)
-        {
-            System.out.println(e.getMessage());
-            System.out.println("Failed to get salary details");
-            return null;
-        }
-    }
-
-    /**
-     * Prints a list of employees.
-     * @param employees The list of employees to print.
-     */
-    public void printSalaries(ArrayList<Employee> employees)
-    {
-        if (employees == null){
-            System.out.println("No employees");
-            return;
-        }
-        // Print header
-        System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Salary"));
-        // Loop over all employees in the list
-        for (Employee emp : employees)
-        {
-            if (emp == null)
-                continue;
-            String emp_string =
-                    String.format("%-10s %-15s %-20s %-8s",
-                            emp.emp_no, emp.first_name, emp.last_name, emp.salary);
-            System.out.println(emp_string);
-        }
-    }
-
-    public void displayEmployeeWithTitle(List<Employee> emp)
-    {
-        if (emp != null && !emp.isEmpty())
-        {
-            System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Title" ,"Salary"));
-            for (Employee employee : emp) {
-                String displayString =
-                        String.format("%-10s %-15s %-20s %-8s",
-                        employee.emp_no, employee.first_name, employee.last_name, " Engineer", employee.salary );
-                System.out.println(displayString);
-            }
-        }
-    }
-
     public static void main(String[] args)
     {
         // Create new Application
@@ -202,15 +79,18 @@ public class App
         // Connect to database
         a.connect();
 
-        // get Employee who are Engineers database
-        List<Employee> emp = a.getEmployeeWithTitile("Engineer");
-        a.displayEmployeeWithTitle(emp);
+        EmployeeSQL employeeSQL = new EmployeeSQL(a.con);
+        EmployeeDisplay employeeDisplay = new EmployeeDisplay();
 
-        ArrayList<Employee> emp1 = a.getAllSalaries();
-        a.printSalaries(emp1);
+        // get Employee who are Engineers database
+        List<Employee> emp = employeeSQL.getEmployeeWithTitle("Engineer");
+        // display employee with title
+        employeeDisplay.displayEmployeeWithTitle(emp);
+
+        ArrayList<Employee> emp1 = employeeSQL.getAllSalaries();
+        employeeDisplay.printSalaries(emp1);
 
         // Disconnect from database
         a.disconnect();
-
     }
 }
