@@ -1,4 +1,4 @@
 FROM openjdk:17-oracle
-COPY ./target/seMethods-1.0-SNAPSHOT-jar-with-dependencies.jar /tmp
+COPY ./target/devopsethods.jar /tmp
 WORKDIR /tmp
-ENTRYPOINT ["java", "-jar", "seMethods-1.0-SNAPSHOT-jar-with-dependencies.jar"]
+ENTRYPOINT ["java", "-jar", "devopsethods.jar", "db:3306", "30000"]

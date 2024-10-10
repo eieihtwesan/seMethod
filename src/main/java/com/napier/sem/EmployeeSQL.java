@@ -15,8 +15,8 @@ public class EmployeeSQL {
         this.con = con;
     }
 
-    public List<Employee> getEmployeeWithTitle(String title) {
-        List<Employee> employees = new ArrayList<>();
+    public ArrayList<Employee> getEmployeeWithTitle(String title) {
+        ArrayList<Employee> employees = new ArrayList<>();
 
         try {
             String strSelect =
@@ -44,6 +44,7 @@ public class EmployeeSQL {
             rset.close();
             pstmt.close();
             return employees;
+
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Failed to get employee details");

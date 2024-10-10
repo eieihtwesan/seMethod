@@ -14,39 +14,31 @@ public class App
     /**
      * Connect to the MySQL database
      */
-    public void connect()
-    {
-        try
-        {
+    public void connect(String location, int delay) {
+        try {
             // Load Database driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             System.out.println("Could not load SQL driver");
             System.exit(-1);
         }
 
-        int retries = 100;
-        for (int i = 0; i < retries; ++i)
-        {
+        int retries = 10;
+        for (int i = 0; i < retries; ++i) {
             System.out.println("Connecting to database...");
-            try
-            {
+            try {
                 // Wait a bit for db to start
-                Thread.sleep(30000);
+                Thread.sleep(delay);
                 // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/employees?allowPublicKeyRetrieval=true&useSSL=false", "root", "example");
+                con = DriverManager.getConnection("jdbc:mysql://" + location
+                                + "/employees?allowPublicKeyRetrieval=true&useSSL=false",
+                        "root", "example");
                 System.out.println("Successfully connected");
                 break;
-            }
-            catch (SQLException sqle)
-            {
+            } catch (SQLException sqle) {
                 System.out.println("Failed to connect to database attempt " + Integer.toString(i));
                 System.out.println(sqle.getMessage());
-            }
-            catch (InterruptedException ie)
-            {
+            } catch (InterruptedException ie) {
                 System.out.println("Thread interrupted? Should not happen.");
             }
         }
@@ -76,22 +68,31 @@ public class App
         // Create new Application
         App a = new App();
 
-        // Connect to database
-        a.connect();
+        // Create new Application and Connect to database
+        if (args.length < 1){
+            a.connect("localhost:33060", 5000);
+        }else {
+            a.connect(args[0], Integer.parseInt(args[1]));
+        }
+
 
         EmployeeSQL employeeSQL = new EmployeeSQL(a.con);
         EmployeeDisplay employeeDisplay = new EmployeeDisplay();
 
+        String title = "Engineer";
         // get Employee who are Engineers database
-        List<Employee> emp = employeeSQL.getEmployeeWithTitle("Engineer");
-        // display employee with title
-        employeeDisplay.displayEmployeeWithTitle(emp);
+        ArrayList<Employee> emp = employeeSQL.getEmployeeWithTitle("Engineer");
+        employeeDisplay.displayEmployeeWithTitle(emp, title);
 
         ArrayList<Employee> emp1 = employeeSQL.getAllSalaries();
         employeeDisplay.printSalaries(emp1);
 
+        // department
+        String department = "Development";
         DepartmentSQL departmentSQL = new DepartmentSQL(a.con);
-
+        Department dept = departmentSQL.getDepartment(department);
+        List<Employee> emp2 = employeeSQL.getSalariesByDepartment(dept);
+        employeeDisplay.displaySalariesByDepartment(emp2, department);
 
         // Disconnect from database
         a.disconnect();

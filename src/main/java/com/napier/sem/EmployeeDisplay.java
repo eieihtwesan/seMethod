@@ -29,7 +29,7 @@ public class EmployeeDisplay {
         }
     }
 
-    public void displayEmployeeWithTitle(List<Employee> emp)
+    public void displayEmployeeWithTitle(List<Employee> emp, String title)
     {
         if (emp != null && !emp.isEmpty())
         {
@@ -37,7 +37,21 @@ public class EmployeeDisplay {
             for (Employee employee : emp) {
                 String displayString =
                         String.format("%-10s %-15s %-20s %-8s",
-                                employee.emp_no, employee.first_name, employee.last_name, " Engineer", employee.salary );
+                                employee.emp_no, employee.first_name, employee.last_name, title , employee.salary );
+                System.out.println(displayString);
+            }
+        }
+    }
+
+    public void displaySalariesByDepartment(List<Employee> emp, String department)
+    {
+        if (emp != null && !emp.isEmpty())
+        {
+            System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Department", "Salary"));
+            for (Employee employee : emp) {
+                String displayString =
+                        String.format("%-10s %-15s %-20s %-8s",
+                                employee.emp_no, employee.first_name, employee.last_name, department, employee.salary );
                 System.out.println(displayString);
             }
         }

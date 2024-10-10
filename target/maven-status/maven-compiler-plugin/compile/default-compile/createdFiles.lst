@@ -1,5 +1,7 @@
-com\napier\sem\Employee.class
 com\napier\sem\EmployeeDisplay.class
+com\napier\sem\DepartmentSQL.class
+com\napier\sem\EmployeeSQL.class
+com\napier\sem\Department.class
+com\napier\sem\Employee.class
 com\napier\sem\Main.class
 com\napier\sem\App.class
-com\napier\sem\EmployeeSQL.class
