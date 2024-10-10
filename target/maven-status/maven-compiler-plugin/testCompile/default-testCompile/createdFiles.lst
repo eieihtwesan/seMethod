@@ -1,1 +1,2 @@
-com\napier\devops\AppTest.class
+com\napier\sem\AppTest.class
+com\napier\sem\AppIntegrationTest.class

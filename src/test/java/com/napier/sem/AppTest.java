@@ -1,8 +1,5 @@
-package com.napier.devops;
+package com.napier.sem;
 
-import com.napier.sem.App;
-import com.napier.sem.Employee;
-import com.napier.sem.EmployeeDisplay;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
