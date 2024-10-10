@@ -90,6 +90,9 @@ public class App
         ArrayList<Employee> emp1 = employeeSQL.getAllSalaries();
         employeeDisplay.printSalaries(emp1);
 
+        DepartmentSQL departmentSQL = new DepartmentSQL(a.con);
+
+
         // Disconnect from database
         a.disconnect();
     }
