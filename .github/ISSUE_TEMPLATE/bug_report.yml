@@ -53,8 +53,15 @@ body:
     attributes:
       label: Relevant log output
       description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
-      value: A bug comes out
       render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Upload your bug screenshot
+      description: Upload your screenshot what happened?
+      placeholder: screenshot upload!
     validations:
       required: true
   - type: checkboxes
