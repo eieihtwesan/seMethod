@@ -1,6 +1,8 @@
 package com.napier.sem;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App
 {
@@ -12,39 +14,31 @@ public class App
     /**
      * Connect to the MySQL database
      */
-    public void connect()
-    {
-        try
-        {
+    public void connect(String location, int delay) {
+        try {
             // Load Database driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             System.out.println("Could not load SQL driver");
             System.exit(-1);
         }
 
-        int retries = 100;
-        for (int i = 0; i < retries; ++i)
-        {
+        int retries = 10;
+        for (int i = 0; i < retries; ++i) {
             System.out.println("Connecting to database...");
-            try
-            {
+            try {
                 // Wait a bit for db to start
-                Thread.sleep(30000);
+                Thread.sleep(delay);
                 // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/employees?allowPublicKeyRetrieval=true&useSSL=false", "root", "example");
+                con = DriverManager.getConnection("jdbc:mysql://" + location
+                                + "/employees?allowPublicKeyRetrieval=true&useSSL=false",
+                        "root", "example");
                 System.out.println("Successfully connected");
                 break;
-            }
-            catch (SQLException sqle)
-            {
+            } catch (SQLException sqle) {
                 System.out.println("Failed to connect to database attempt " + Integer.toString(i));
                 System.out.println(sqle.getMessage());
-            }
-            catch (InterruptedException ie)
-            {
+            } catch (InterruptedException ie) {
                 System.out.println("Thread interrupted? Should not happen.");
             }
         }
@@ -69,10 +63,8 @@ public class App
         }
     }
 
-    public Employee getEmployee(int ID)
-    {
-        try
-        {
+    public Employee getEmployee(int ID) {
+        try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
             // Create string for SQL statement
@@ -84,29 +76,28 @@ public class App
             ResultSet rset = stmt.executeQuery(strSelect);
             // Return new employee if valid.
             // Check one is returned
-            if (rset.next())
-            {
+            if (rset.next()) {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("emp_no");
                 emp.first_name = rset.getString("first_name");
                 emp.last_name = rset.getString("last_name");
                 return emp;
-            }
-            else
+            } else
                 return null;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Failed to get employee details");
             return null;
         }
     }
 
-    public void displayEmployee(Employee emp)
-    {
-        if (emp != null)
-        {
+    /**
+     * Display Employee
+     *
+     * @param emp
+     */
+    public void displayEmployee(Employee emp) {
+        if (emp != null) {
             System.out.println(
                     emp.emp_no + " "
                             + emp.first_name + " "
@@ -123,15 +114,33 @@ public class App
         // Create new Application
         App a = new App();
 
-        // Connect to database
-        a.connect();
+        // Create new Application and Connect to database
+        if (args.length < 1){
+            a.connect("localhost:33060", 5000);
+        }else {
+            a.connect(args[0], Integer.parseInt(args[1]));
+        }
 
-        // get Employee database
-        Employee emp = a.getEmployee(255530);
 
-        a.displayEmployee(emp);
+        EmployeeSQL employeeSQL = new EmployeeSQL(a.con);
+        EmployeeDisplay employeeDisplay = new EmployeeDisplay();
+
+        String title = "Engineer";
+        // get Employee who are Engineers database
+        ArrayList<Employee> emp = employeeSQL.getEmployeeWithTitle("Engineer");
+        employeeDisplay.displayEmployeeWithTitle(emp, title);
+
+        ArrayList<Employee> emp1 = employeeSQL.getAllSalaries();
+        employeeDisplay.printSalaries(emp1);
+
+        // department
+        String department = "Development";
+        DepartmentSQL departmentSQL = new DepartmentSQL(a.con);
+        Department dept = departmentSQL.getDepartment(department);
+        List<Employee> emp2 = employeeSQL.getSalariesByDepartment(dept);
+        employeeDisplay.displaySalariesByDepartment(emp2, department);
+
         // Disconnect from database
         a.disconnect();
-
     }
 }

@@ -1,4 +1,4 @@
-name: Bug Report
+name: Bug Report for testing seMethod
 description: File a bug report.
 title: "[Bug]: "
 labels: ["bug", "triage"]
@@ -54,6 +54,14 @@ body:
       label: Relevant log output
       description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
       render: shell
+  - type: markdown
+    attributes:
+      value: |
+        ## Screenshot (if applicable)
+        If applicable, add a screenshot to help explain your problem.
+        You can **drag and drop** or **paste** your screenshots directly here in the issue.
+
+        ![Screenshot](image-url) <!-- Instruct users to replace this comment by dragging images -->
   - type: checkboxes
     id: terms
     attributes:
