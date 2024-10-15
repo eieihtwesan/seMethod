@@ -59,9 +59,7 @@ body:
       value: |
         ## Screenshot (if applicable)
         If applicable, add a screenshot to help explain your problem.
-        You can **drag and drop** or **paste** your screenshots directly here in the issue.
-
-        ![Screenshot](image-url) <!-- Instruct users to replace this comment by dragging images -->
+        You can **drag and drop** or **paste** your screenshots directly here in the issue editor.
   - type: checkboxes
     id: terms
     attributes:
